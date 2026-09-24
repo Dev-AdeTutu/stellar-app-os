@@ -186,4 +186,5 @@ pub enum FarmerError {
     FarmerFrozen = 8,
     LandTenureAlreadyExists = 9,
     LandTenureNotFound = 10,
+    InvalidMerkleProof = 11,
 }
