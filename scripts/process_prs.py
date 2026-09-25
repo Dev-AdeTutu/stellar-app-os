@@ -156,11 +156,14 @@ def main():
             print(f"PR #{pr_num} is not open (state={pr_data.get('state')}), skipping.")
             continue
             
+        # Respect draft PRs and opt-out label - do not auto-merge/review
+        labels = [lbl.get("name") for lbl in pr_data.get("labels", [])]
+        if "no-auto-merge" in labels:
+            print(f"PR #{pr_num} has 'no-auto-merge' label. Skipping auto-merge/review.")
+            continue
         if pr_data.get("draft"):
-            print(f"PR #{pr_num} is draft. Marking ready...")
-            run_cmd(["gh", "pr", "ready", str(pr_num), "--repo", REPO])
-            time.sleep(2)
-            pr_data = get_pr(pr_num)
+            print(f"PR #{pr_num} is draft. Skipping auto-merge/review (draft requires manual ready).")
+            continue
             
         mergeable = pr_data.get("mergeable")
         mergeable_state = pr_data.get("mergeable_state")
